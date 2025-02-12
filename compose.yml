@@ -1,4 +1,5 @@
 version: '3.8'
+## Features
 services:
   web:
     #image: odoo:17.0
@@ -9,7 +10,7 @@ services:
       - "8069:8069"
     volumes:
       #- odoo-web-data:/var/lib/odoo
-      - ./odoo/config/odoo.config:/etc/odoo
+      - ./odoo/config/odoo.conf:/etc/odoo
       - ./odoo/extra-addons:/mnt/extra-addons
     environment:
       - PASSWORD_FILE=/run/secrets/postgresql_password

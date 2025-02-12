@@ -1,6 +1,4 @@
-FROM python:3.12-slim
-
-#FROM ubuntu:noble
+FROM ubuntu:noble
 
 SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
 
@@ -35,8 +33,7 @@ RUN apt-get update && \
         python3-watchdog \
         python3-xlrd \
         python3-xlwt \
-        xz-utils \
-        libjpeg62-turbo-dev  && \
+        xz-utils && \
     if [ -z "${TARGETARCH}" ]; then \
         TARGETARCH="$(dpkg --print-architecture)"; \
     fi; \
