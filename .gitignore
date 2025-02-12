@@ -173,3 +173,8 @@ cython_debug/
 
 # VScode
 .vscode/
+
+
+# Do Odoo
+odoo-db-data/
+*/odoo-db-data/

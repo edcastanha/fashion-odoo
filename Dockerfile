@@ -8,6 +8,7 @@ ENV LANG pt_BR.UTF-8
 
 ARG TARGETARCH
 
+# Install some deps, lessc and less-plugin-clean-css, and wkhtmltopdf
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
@@ -34,7 +35,8 @@ RUN apt-get update && \
         python3-watchdog \
         python3-xlrd \
         python3-xlwt \
-        xz-utils && \
+        xz-utils \
+        libjpeg62-turbo-dev  && \
     if [ -z "${TARGETARCH}" ]; then \
         TARGETARCH="$(dpkg --print-architecture)"; \
     fi; \
@@ -76,24 +78,20 @@ RUN curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/od
     && apt-get -y install --no-install-recommends ./odoo.deb \
     && rm -rf /var/lib/apt/lists/* odoo.deb
 
-COPY ./entrypoint.sh /
-COPY ./odoo.conf /etc/odoo/
+COPY ./odoo/entrypoint.sh /
+COPY ./odoo/config/odoo.conf /etc/odoo/
 
-# Set permissions and Mount /var/lib/odoo to allow restoring filestore and /mnt/extra-addons for users addons
 RUN chown odoo /etc/odoo/odoo.conf \
     && mkdir -p /mnt/extra-addons \
     && chown -R odoo /mnt/extra-addons
 VOLUME ["/var/lib/odoo", "/mnt/extra-addons"]
 
-# Expose Odoo services
 EXPOSE 8069 8071 8072
 
-# Set the default config file
 ENV ODOO_RC /etc/odoo/odoo.conf
 
-COPY wait-for-psql.py /usr/local/bin/wait-for-psql.py
+COPY ./odoo/wait-for-psql.py /usr/local/bin/wait-for-psql.py
 
-# Set default user when running the container
 USER odoo
 
 ENTRYPOINT ["/entrypoint.sh"]
